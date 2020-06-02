@@ -24,6 +24,27 @@ class CryptoLib
 
         self::$pepper = $new;
     }
+    
+    /**
+    *
+    * Create an array of special characters to be included in the random string generation.
+    * Characters that have not been included are "$", "'", """, "\", and "/"
+    *
+    */
+	private static $allowedCharArr = array('!','@','&','%','#','^','?','*','+','-','_','(',')','[',']','{','}','|',';',',','.','<','>','~',':');
+    
+    public static function changeAllowedCharArray(Array $new)
+    {
+        if ((!is_array($new))) {
+            throw new \Exception('The value passed is not an array. Please pass an array of chars.');
+        }
+		
+		if ((empty($new))) {
+            throw new \Exception('The value passed is empty. Please pass an array of chars.');
+        }
+
+        self::$allowedCharArr = $new;
+    }
 
     /**
      * Will return openssl_random_pseudo_bytes with desired length if the server uses 
@@ -113,7 +134,7 @@ class CryptoLib
             throw new \Exception('Length must be a positive integer.');
         }
 
-        $charactersArr = \array_merge(\range('a', 'z'), \range('A', 'Z'), \range('0', '9'));
+        $charactersArr = \array_merge(\range('a', 'z'), \range('A', 'Z'), \range('0', '9'), self::$allowedCharArr);
         $charactersCount = \count($charactersArr);
         $stringArr       = array();
 
